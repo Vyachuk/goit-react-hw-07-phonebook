@@ -5,7 +5,7 @@ export const Form = styled.form`
   flex-direction: column;
   gap: 8px;
 
-  max-width: 350px;
+  min-width: 350px;
   input {
     border: none;
     border-bottom: 1px solid black;

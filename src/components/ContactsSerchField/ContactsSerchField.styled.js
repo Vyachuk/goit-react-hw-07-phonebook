@@ -4,7 +4,7 @@ export const ContactWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 350px;
+  min-width: 350px;
   margin-bottom: 20px;
   input {
     border: none;
