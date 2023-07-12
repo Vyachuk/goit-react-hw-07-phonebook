@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { toast } from 'react-toastify';
+import { fetchAddContact } from 'redux/operations';
 import { Form, FormTitle } from './PhoneBookForm.styled';
 
 export const PhoneBookForm = () => {
@@ -9,7 +10,9 @@ export const PhoneBookForm = () => {
   const dispatch = useDispatch();
   const onSubmit = e => {
     e.preventDefault();
-    dispatch(addContact({ name, number, id: crypto.randomUUID() }));
+    dispatch(fetchAddContact({ name, number }))
+      .unwrap()
+      .then(toast.info(`${name} was added to contacts!`));
     setName('');
     setNumber('');
   };

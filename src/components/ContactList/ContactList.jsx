@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
+import { toast } from 'react-toastify';
+import { fetchDeleteContact } from 'redux/operations';
 import { selectContacts, selectFilter } from 'redux/selcetors';
 import {
   ContactButton,
@@ -26,7 +27,11 @@ export const ContactList = () => {
           {contact.name}: {contact.number}
           <ContactButton
             type="button"
-            onClick={() => dispatch(deleteContact(contact.id))}
+            onClick={() =>
+              dispatch(fetchDeleteContact(contact.id))
+                .unwrap()
+                .then(toast.info(`${contact.name} was removed!`))
+            }
           >
             Delete
           </ContactButton>

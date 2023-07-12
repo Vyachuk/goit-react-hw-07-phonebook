@@ -1,12 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
+import {
+  fetchAddContact,
+  fetchAllContacts,
+  fetchDeleteContact,
+} from './operations';
 
 const initialState = {
-  contacts: [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ],
+  contacts: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
   filter: '',
 };
 
@@ -14,16 +18,45 @@ const contactSlice = createSlice({
   name: 'contacts',
   initialState: initialState,
   reducers: {
-    addContact(state, { payload }) {
-      state.contacts = [...state.contacts, payload];
-    },
-    deleteContact(state, { payload }) {
-      const i = state.contacts.findIndex(task => task.id === payload);
-      state.contacts.splice(i, 1);
-    },
     changeFilter(state, { payload }) {
       state.filter = payload;
     },
+  },
+
+  extraReducers: builder => {
+    builder
+      .addCase(fetchAllContacts.fulfilled, (state, { payload }) => {
+        state.contacts.isLoading = false;
+        state.contacts.error = null;
+        state.contacts.items = payload;
+      })
+      .addCase(fetchDeleteContact.fulfilled, (state, { payload }) => {
+        state.contacts.isLoading = false;
+        state.contacts.error = null;
+        const index = state.contacts.items.findIndex(
+          task => task.id === payload.id
+        );
+        state.contacts.items.splice(index, 1);
+      })
+      .addCase(fetchAddContact.fulfilled, (state, { payload }) => {
+        state.contacts.items = [...state.contacts.items, payload];
+        state.contacts.isLoading = false;
+        state.contacts.error = null;
+      })
+      .addMatcher(
+        action => action.type.endsWith('/rejected'),
+        (state, { payload }) => {
+          state.contacts.isLoading = false;
+          state.contacts.error = payload;
+        }
+      )
+      .addMatcher(
+        action => action.type.endsWith('/pending'),
+        (state, { payload }) => {
+          state.contacts.isLoading = true;
+          state.contacts.error = null;
+        }
+      );
   },
 });
 
