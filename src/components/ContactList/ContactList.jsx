@@ -30,7 +30,7 @@ export const ContactList = () => {
             onClick={() =>
               dispatch(fetchDeleteContact(contact.id))
                 .unwrap()
-                .then(toast.info(`${contact.name} was removed!`))
+                .then(() => toast.info(`${contact.name} was removed!`))
             }
           >
             Delete
